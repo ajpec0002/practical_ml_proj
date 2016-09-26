@@ -1,9 +1,4 @@
----
-title: "Practical Machine Learning: Human Activity Recognition"
-output: 
-  html_document:
-    keep_md: true
----
+# Practical Machine Learning: Human Activity Recognition
 
 ## Background
 
