@@ -1,0 +1,135 @@
+---
+title: "Practical Machine Learning: Human Activity Recognition"
+output: 
+  html_document:
+    keep_md: true
+---
+
+## Background
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
+
+The goal of this project is to predict the manner in which the participants did the exercise. This is the "classe" variable in the training set. The generated prediction model will then be used to predict the given 20 different test cases.
+
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+#load needed libraries
+library(caret)
+library(randomForest)
+library(rpart)
+```
+
+###1. Load Input Data
+The training and test data were downloaded from: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv and https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv respectively and saved to the local computer. They are then loaded to memory.
+```{r, echo=TRUE}
+
+#Set seed to reproduce the result
+set.seed(242423234)
+
+#Read pml training csv (Note: It was pre-downloaded and copied to the below location)
+pmlTrainingDF <- read.csv("/Users/adrian/Downloads/practical_ml_proj/pml-training.csv", na.strings = c("NA","#DIV/0!","")) 
+
+#Read pml testing csv (Note: It was pre-downloaded and copied to the below location)
+pmlTestingDF <- read.csv("/Users/adrian/Downloads/practical_ml_proj/pml-testing.csv", na.strings = c("NA","#DIV/0!",""))
+
+
+```
+
+###2. Pre-processing
+The given data was pre-processed to exclude columns with a lot of NA data (> than 80%) and those that have nearly zero variance.
+The timestamp fields were also removed as well as the X field which is just a running number. There are also a minor difference between the given training ang test set so it is necessary to make them identitical in structure so we can run the generated prediction model against the test set.
+```{r, echo=TRUE}
+
+#Exclude columns with a lot of NAs (> 80%)
+aLotNACols<-which(colSums(is.na(pmlTrainingDF))> (nrow(pmlTrainingDF) * 0.8))
+pmlTrainingDF <- pmlTrainingDF[, -aLotNACols]
+pmlTestingDF <- pmlTestingDF[, -aLotNACols]
+
+# Remove NA data
+pmlTrainingDF <- pmlTrainingDF[, names(pmlTrainingDF)[sapply(pmlTrainingDF, function (x) ! (any(is.na(x) | x == "")))]]
+pmlTestingDF <- pmlTestingDF[, names(pmlTestingDF)[sapply(pmlTestingDF, function (x) ! (any(is.na(x) | x == "")))]]
+
+
+#In order to run the prediction model againts the given test data, the structure must match
+#Remove the problem_id field
+pmlTestingDF$problem_id <- NULL
+#Assign dummy class
+pmlTestingDF$classe <- c("A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E")
+
+#Get NZV fields and exclude them
+nzvList <- nearZeroVar(pmlTrainingDF)
+pmlTrainingDF <- pmlTrainingDF[, -nzvList]
+pmlTestingDF <- pmlTestingDF[, -nzvList]
+
+
+#Exclude timestamp fields, they are specific to the time when the accelerometer data was collected.
+#Although they may help to increase the accuracy of the classification against the training data I feel that the model will tend to overfit
+
+pmlTrainingDF$raw_timestamp_part_1 <- NULL
+pmlTrainingDF$raw_timestamp_part_2 <- NULL
+pmlTrainingDF$cvtd_timestamp <- NULL
+
+pmlTestingDF$raw_timestamp_part_1 <- NULL
+pmlTestingDF$raw_timestamp_part_2 <- NULL
+pmlTestingDF$cvtd_timestamp <- NULL
+
+#Remove X field which is just a running sequence
+pmlTrainingDF$X <- NULL
+pmlTestingDF$X <- NULL
+
+dim(pmlTrainingDF)
+dim(pmlTestingDF)
+```
+  
+
+###2. Data Splitting
+The given test data were splitted into a training (60%) and validation (40%). The prediction model will be generated using the training set and then evaluated using the validation set.
+```{r, echo=TRUE}
+
+
+#Partition input data into training and validation
+inTrain <- createDataPartition(y=pmlTrainingDF$classe, p=0.6, list=FALSE)
+pmlTrain <- pmlTrainingDF[inTrain, ]
+pmlVal <- pmlTrainingDF[-inTrain, ]
+
+dim(pmlTrain)
+dim(pmlVal)
+```
+
+###3. Model generation using Random Forest Algorithm
+Rendom Forest algorithm was used to generate the prediction model since it is proven for its accuracy in classification.
+```{r, echo=TRUE}
+
+# Generate prediction model
+modFitRP <- randomForest(classe ~. , data=pmlTrain)
+
+
+```
+
+###4. Evaluate the generated model against the validation set
+The generated prediction model was evaluated against the validation set and the accuracy was measured.
+```{r, echo=TRUE}
+
+
+predictionsVal <- predict(modFitRP, pmlVal, type = "class")
+confusionMatrix(predictionsVal, pmlVal$classe)
+
+
+```
+
+###4. Evaluate the generated model against the given test set
+The generated prediction model was evaluated against the given 20 test cases.
+```{r, echo=TRUE}
+
+
+predictionsTest <- predict(modFitRP, pmlTestingDF, type = "class")
+predictionsTest
+
+```
+
+###4. Conclusion
+The generated prediction model was able to predict with 100% accuracy the expected result on the given 20 test cases. There are a couple of points to highlight: <br>
+1. Pre-processing the input data is very important since it will help with both the accuracy and efficiency of the generated prediction model (garbage-in = garbage-out). <br>
+2. Random forest algorithm is very good in classification problems and in our sample case it is able to generate a model with > 99% accuracy. 
+
+
