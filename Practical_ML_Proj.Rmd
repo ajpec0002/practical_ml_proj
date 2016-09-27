@@ -1,5 +1,8 @@
 # Practical Machine Learning: Human Activity Recognition
 
+<br>
+Rendered HTML link: http://htmlpreview.github.com/?https://github.com/ajpec0002/practical_ml_proj/blob/master/Practical_ML_Proj.html <br>
+
 ## Background
 
 Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
@@ -11,11 +14,10 @@ The goal of this project is to predict the manner in which the participants did 
 #load needed libraries
 library(caret)
 library(randomForest)
-library(rpart)
 ```
 
 ###1. Load Input Data
-The training and test data were downloaded from: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv and https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv respectively and saved to the local computer. They are then loaded to memory.
+The training and test data were downloaded from: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv <br> and https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv respectively and saved to the local computer. They are then loaded to memory.
 ```{r, echo=TRUE}
 
 #Set seed to reproduce the result
@@ -77,7 +79,7 @@ dim(pmlTestingDF)
 ```
   
 
-###2. Data Splitting
+###3. Data Splitting
 The given test data were splitted into a training (60%) and validation (40%). The prediction model will be generated using the training set and then evaluated using the validation set.
 ```{r, echo=TRUE}
 
@@ -91,7 +93,7 @@ dim(pmlTrain)
 dim(pmlVal)
 ```
 
-###3. Model generation using Random Forest Algorithm
+###4. Model generation using Random Forest Algorithm
 Rendom Forest algorithm was used to generate the prediction model since it is proven for its accuracy in classification.
 ```{r, echo=TRUE}
 
@@ -101,7 +103,7 @@ modFitRP <- randomForest(classe ~. , data=pmlTrain)
 
 ```
 
-###4. Evaluate the generated model against the validation set using Cross-validation.
+###5. Evaluate the generated model against the validation set using Cross-validation.
 The generated prediction model was evaluated against the validation set and the accuracy and out-of sample error was measured.
 ```{r, echo=TRUE}
 
@@ -112,7 +114,7 @@ confusionMatrix(predictionsVal, pmlVal$classe)
 
 ```
 
-###4. Evaluate the generated model against the given test set
+###6. Evaluate the generated model against the given test set
 The generated prediction model was evaluated against the given 20 test cases.
 ```{r, echo=TRUE}
 
@@ -122,8 +124,8 @@ predictionsTest
 
 ```
 
-###4. Conclusion
-The generated prediction model was able to predict with 100% accuracy the expected result on the given 20 test cases. There are a couple of points to highlight: <br>
+###7. Conclusion
+The generated prediction model was able to predict with 100% accuracy the expected result on the given 20 test cases. There are a a few points to highlight: <br>
 1. Pre-processing the input data is very important since it will help with both the accuracy and efficiency of the generated prediction model (garbage-in = garbage-out). <br>
 2. Random forest algorithm is very good in classification problems and in our sample case it is able to generate a model with > 99% accuracy. <br>
 3. Out of sample error is very low (1 - 0.9973) = 0.0027 after running cross-validation which is very good.

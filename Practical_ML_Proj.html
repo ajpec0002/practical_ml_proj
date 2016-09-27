@@ -63,13 +63,14 @@ img {
 
 <div id="practical-machine-learning-human-activity-recognition" class="section level1">
 <h1>Practical Machine Learning: Human Activity Recognition</h1>
+<p><br> Rendered HTML link: <a href="http://htmlpreview.github.com/?https://github.com/ajpec0002/practical_ml_proj/blob/master/Practical_ML_Proj.html" class="uri">http://htmlpreview.github.com/?https://github.com/ajpec0002/practical_ml_proj/blob/master/Practical_ML_Proj.html</a> <br></p>
 <div id="background" class="section level2">
 <h2>Background</h2>
 <p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: <a href="http://groupware.les.inf.puc-rio.br/har" class="uri">http://groupware.les.inf.puc-rio.br/har</a> (see the section on the Weight Lifting Exercise Dataset).</p>
 <p>The goal of this project is to predict the manner in which the participants did the exercise. This is the “classe” variable in the training set. The generated prediction model will then be used to predict the given 20 different test cases.</p>
 <div id="load-input-data" class="section level3">
 <h3>1. Load Input Data</h3>
-<p>The training and test data were downloaded from: <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a> and <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a> respectively and saved to the local computer. They are then loaded to memory.</p>
+<p>The training and test data were downloaded from: <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a> <br> and <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv" class="uri">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a> respectively and saved to the local computer. They are then loaded to memory.</p>
 <pre class="r"><code>#Set seed to reproduce the result
 set.seed(242423234)
 
@@ -125,7 +126,7 @@ dim(pmlTrainingDF)</code></pre>
 <pre><code>## [1] 20 55</code></pre>
 </div>
 <div id="data-splitting" class="section level3">
-<h3>2. Data Splitting</h3>
+<h3>3. Data Splitting</h3>
 <p>The given test data were splitted into a training (60%) and validation (40%). The prediction model will be generated using the training set and then evaluated using the validation set.</p>
 <pre class="r"><code>#Partition input data into training and validation
 inTrain &lt;- createDataPartition(y=pmlTrainingDF$classe, p=0.6, list=FALSE)
@@ -138,13 +139,13 @@ dim(pmlTrain)</code></pre>
 <pre><code>## [1] 7846   55</code></pre>
 </div>
 <div id="model-generation-using-random-forest-algorithm" class="section level3">
-<h3>3. Model generation using Random Forest Algorithm</h3>
+<h3>4. Model generation using Random Forest Algorithm</h3>
 <p>Rendom Forest algorithm was used to generate the prediction model since it is proven for its accuracy in classification.</p>
 <pre class="r"><code># Generate prediction model
 modFitRP &lt;- randomForest(classe ~. , data=pmlTrain)</code></pre>
 </div>
 <div id="evaluate-the-generated-model-against-the-validation-set-using-cross-validation." class="section level3">
-<h3>4. Evaluate the generated model against the validation set using Cross-validation.</h3>
+<h3>5. Evaluate the generated model against the validation set using Cross-validation.</h3>
 <p>The generated prediction model was evaluated against the validation set and the accuracy and out-of sample error was measured.</p>
 <pre class="r"><code>predictionsVal &lt;- predict(modFitRP, pmlVal, type = &quot;class&quot;)
 confusionMatrix(predictionsVal, pmlVal$classe)</code></pre>
@@ -181,7 +182,7 @@ confusionMatrix(predictionsVal, pmlVal$classe)</code></pre>
 ## Balanced Accuracy      0.9993   0.9973   0.9989   0.9970   0.9985</code></pre>
 </div>
 <div id="evaluate-the-generated-model-against-the-given-test-set" class="section level3">
-<h3>4. Evaluate the generated model against the given test set</h3>
+<h3>6. Evaluate the generated model against the given test set</h3>
 <p>The generated prediction model was evaluated against the given 20 test cases.</p>
 <pre class="r"><code>predictionsTest &lt;- predict(modFitRP, pmlTestingDF, type = &quot;class&quot;)
 predictionsTest</code></pre>
@@ -190,8 +191,8 @@ predictionsTest</code></pre>
 ## Levels: A B C D E</code></pre>
 </div>
 <div id="conclusion" class="section level3">
-<h3>4. Conclusion</h3>
-<p>The generated prediction model was able to predict with 100% accuracy the expected result on the given 20 test cases. There are a couple of points to highlight: <br> 1. Pre-processing the input data is very important since it will help with both the accuracy and efficiency of the generated prediction model (garbage-in = garbage-out). <br> 2. Random forest algorithm is very good in classification problems and in our sample case it is able to generate a model with &gt; 99% accuracy. <br> 3. Out of sample error is very low (1 - 0.9973) = 0.0027 after running cross-validation which is very good.</p>
+<h3>7. Conclusion</h3>
+<p>The generated prediction model was able to predict with 100% accuracy the expected result on the given 20 test cases. There are a a few points to highlight: <br> 1. Pre-processing the input data is very important since it will help with both the accuracy and efficiency of the generated prediction model (garbage-in = garbage-out). <br> 2. Random forest algorithm is very good in classification problems and in our sample case it is able to generate a model with &gt; 99% accuracy. <br> 3. Out of sample error is very low (1 - 0.9973) = 0.0027 after running cross-validation which is very good.</p>
 </div>
 </div>
 </div>
