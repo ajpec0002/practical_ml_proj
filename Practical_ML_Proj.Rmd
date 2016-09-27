@@ -101,8 +101,8 @@ modFitRP <- randomForest(classe ~. , data=pmlTrain)
 
 ```
 
-###4. Evaluate the generated model against the validation set
-The generated prediction model was evaluated against the validation set and the accuracy was measured.
+###4. Evaluate the generated model against the validation set using Cross-validation.
+The generated prediction model was evaluated against the validation set and the accuracy and out-of sample error was measured.
 ```{r, echo=TRUE}
 
 
@@ -125,6 +125,7 @@ predictionsTest
 ###4. Conclusion
 The generated prediction model was able to predict with 100% accuracy the expected result on the given 20 test cases. There are a couple of points to highlight: <br>
 1. Pre-processing the input data is very important since it will help with both the accuracy and efficiency of the generated prediction model (garbage-in = garbage-out). <br>
-2. Random forest algorithm is very good in classification problems and in our sample case it is able to generate a model with > 99% accuracy. 
+2. Random forest algorithm is very good in classification problems and in our sample case it is able to generate a model with > 99% accuracy. <br>
+3. Out of sample error is very low (1 - 0.9973) = 0.0027 after running cross-validation which is very good.
 
 

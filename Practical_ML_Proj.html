@@ -143,9 +143,9 @@ dim(pmlTrain)</code></pre>
 <pre class="r"><code># Generate prediction model
 modFitRP &lt;- randomForest(classe ~. , data=pmlTrain)</code></pre>
 </div>
-<div id="evaluate-the-generated-model-against-the-validation-set" class="section level3">
-<h3>4. Evaluate the generated model against the validation set</h3>
-<p>The generated prediction model was evaluated against the validation set and the accuracy was measured.</p>
+<div id="evaluate-the-generated-model-against-the-validation-set-using-cross-validation." class="section level3">
+<h3>4. Evaluate the generated model against the validation set using Cross-validation.</h3>
+<p>The generated prediction model was evaluated against the validation set and the accuracy and out-of sample error was measured.</p>
 <pre class="r"><code>predictionsVal &lt;- predict(modFitRP, pmlVal, type = &quot;class&quot;)
 confusionMatrix(predictionsVal, pmlVal$classe)</code></pre>
 <pre><code>## Confusion Matrix and Statistics
@@ -191,7 +191,7 @@ predictionsTest</code></pre>
 </div>
 <div id="conclusion" class="section level3">
 <h3>4. Conclusion</h3>
-<p>The generated prediction model was able to predict with 100% accuracy the expected result on the given 20 test cases. There are a couple of points to highlight: <br> 1. Pre-processing the input data is very important since it will help with both the accuracy and efficiency of the generated prediction model (garbage-in = garbage-out). <br> 2. Random forest algorithm is very good in classification problems and in our sample case it is able to generate a model with &gt; 99% accuracy.</p>
+<p>The generated prediction model was able to predict with 100% accuracy the expected result on the given 20 test cases. There are a couple of points to highlight: <br> 1. Pre-processing the input data is very important since it will help with both the accuracy and efficiency of the generated prediction model (garbage-in = garbage-out). <br> 2. Random forest algorithm is very good in classification problems and in our sample case it is able to generate a model with &gt; 99% accuracy. <br> 3. Out of sample error is very low (1 - 0.9973) = 0.0027 after running cross-validation which is very good.</p>
 </div>
 </div>
 </div>
